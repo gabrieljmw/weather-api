@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+        h5 {
+            padding-top: 20px;
+        }
+    </style>
+    <title>Hello, world!</title>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h4>Weather API</h4>
+        <input type="text" placeholder="Enter city" class="form-control search">
+        <div class="output pt-3">
+            <h5>City</h5>
+            <div class="results city"></div>
+            <h5>Coordinates</h5>
+            <div class="results coord"></div>
+            <h5>Weather</h5>
+            <div class="results weather"></div>
+            <h5>Main</h5>
+            <div class="results main"></div>
+            <h5>Wind</h5>
+            <div class="results wind"></div>
+        </div>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.js " integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin=" anonymous "></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js " integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1 " crossorigin="anonymous "></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js " integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM " crossorigin="anonymous "></script>
+    <script>
+        $(document).ready(function() {
+
+            $(document).on("keyup", ".search", function(e) {
+                if (e.which == 13) {
+                    let location = $('.search').val();
+                    search(location);
+                }
+            });
+
+            function iterate(data, cname) {
+                $.each((data), function(key, value) {
+                    if (key != "id" && key != "icon")
+                        $(cname).append(key + ": " + value + "<br>");
+                });
+            }
+
+            function search(location) {
+                let query = location;
+                $.ajax({
+                    url: 'http://api.openweathermap.org/data/2.5/weather?q=' + location + ' &appid=fa85815b874f4c6f308888007767d5cd&units=metric',
+                    success: function(data) {
+                        $('.results').each(function(index, value) {
+                            $(this).empty();
+                        })
+
+                        console.log(data);
+                        $('.country').append(data.sys.country);
+                        $('.weather').append("<img src='http://openweathermap.org/img/wn/" + data.weather[0].icon + ".png'>" + "<br>");
+                        $('.city').append(data.name + ", " + data.sys.country);
+                        iterate(data.main, ".main")
+                        iterate(data.coord, ".coord");
+                        iterate(data.weather[0], ".weather");
+                        iterate(data.wind, ".wind");
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
